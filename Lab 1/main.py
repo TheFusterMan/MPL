@@ -2,7 +2,7 @@ from concurrent.futures import ProcessPoolExecutor as Pool
 import pandas as pd
 import random as rd
 
-def generate_csv(filename: str):
+def generate_csv(filename: str) -> None:
     data = {
         'cathegory': [],
         'value': []
@@ -50,7 +50,7 @@ def process_csv(filename: str):
 
     return result_data
 
-def get_median(numbers: list):
+def get_median(numbers: list) -> None | float:
     quantity = len(numbers)
     numbers.sort()
 
@@ -126,3 +126,5 @@ if __name__ == '__main__':
         df.to_csv("result.csv", index=False)
     except Exception as e:
         print(f"an error occurred: {e}")
+
+    print("Done! Answer in result.csv. If u want to see all stages of the process check out other files.")
