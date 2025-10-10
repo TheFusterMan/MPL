@@ -40,10 +40,11 @@ def process_csv(filename: str):
         data_by_cathegories[item['cathegory']].append(item['value'])
 
     for cathegory in data_by_cathegories.keys():
-        median = get_median(data_by_cathegories[cathegory])
-        dispersion = get_dispersion(data_by_cathegories[cathegory])
+        values_list = data_by_cathegories[cathegory]
+        median = get_median(values_list)
 
         if (median != None):
+            dispersion = get_dispersion(values_list)
             result_data['cathegory'].append(cathegory)
             result_data['median'].append(median)
             result_data['dispersion'].append(dispersion)
@@ -62,7 +63,7 @@ def get_median(numbers: list) -> None | float:
     else:
         return numbers[(quantity//2)]
 
-def get_mean(numbers: list):
+def get_mean(numbers: list) -> float:
     return sum(numbers) / len(numbers)
 
 def get_dispersion(numbers: list):
@@ -75,18 +76,17 @@ def get_dispersion(numbers: list):
 
     return dispersions_squares_sum / quantity
 
-def merge_processed_files(filenames: str):
+def merge_processed_files(filenames: list[str]):
     merged_data = {
         'cathegory': [],
         'value': []
     }
-    cathegories = "ABCD"
 
     for filename in filenames:
         data_to_merge = pd.read_csv(f"{filename}.csv").to_dict(orient='records')
-        for i in range(4):
-            merged_data['cathegory'].append(cathegories[i])
-            merged_data['value'].append(data_to_merge[i]['median'])
+        for row in data_to_merge:
+            merged_data['cathegory'].append(row['cathegory'])
+            merged_data['value'].append(row['median'])
 
     df = pd.DataFrame(merged_data)
 

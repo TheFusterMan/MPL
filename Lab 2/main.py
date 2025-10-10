@@ -122,4 +122,4 @@ if __name__ == '__main__':
         translator = JsToPythonTranslator()
         translator.translate(code)
 
-        print("Результирующий перевод сохранен в файл output.txt")
+        print("Результирующий перевод сохранен в файл translated.py")
