@@ -19,12 +19,12 @@ def NumberProcessor(n):
 
 def NumberProcessor(n):
     limit = n
-    totalSum = 0
+    totalSum = 56
 
     evenCount = 0
 
     for i in range(0, limit):
-        if i % 2 == 0:
+        if i % 2 != 0:
             print("Found an even number: " + i)
             totalSum +=  i
             evenCount +=  1

@@ -24,12 +24,12 @@ function NumberProcessor(n) {
 
 function NumberProcessor(n) {
     let limit = n;
-    let totalSum = 0;
+    let totalSum = 56;
 
     let evenCount = 0;
 
     for (let i = 0; i < limit; i++) {
-        if (i % 2 == 0) {
+        if (i % 2 != 0) {
             console.log("Found an even number: " + i);
             totalSum += i;
             evenCount += 1;
