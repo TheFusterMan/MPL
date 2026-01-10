@@ -25,15 +25,6 @@ class JsToPythonTranslator:
                 self.current_context_nesting += 1
                 continue
 
-            # this - трудно реализовать                                                     :-(
-            # match = re.match(r'^this\.(\w+)\s{1}\=\s{1}(.+?)\;$', line)
-            # if match:
-            #     var_name = match.group(1)
-            #     var_value = match.group(2)
-            #
-            #     translated_lines.append(f"{self.getIndent()}self.{var_name} = {var_value}")
-            #     continue
-
             # return
             match = re.match(r'^return\s{1}(.+?)\;$', line)
             if match:

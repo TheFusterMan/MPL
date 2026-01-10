@@ -22,59 +22,14 @@ def generate_csv(filename: str) -> None:
     except Exception as e:
         print(f"an error occurred: {e}")
 
+
 def process_csv(filename: str):
-    data = pd.read_csv(f"{filename}.csv").to_dict(orient='records')
-    data_by_cathegories = {
-        'A': [],
-        'B': [],
-        'C': [],
-        'D': [],
-    }
-    result_data = {
-        'cathegory': [],
-        'median': [],
-        'dispersion': [],
-    }
+    df = pd.read_csv(f"{filename}.csv")
+    result_df = df.groupby('cathegory')['value'].agg(['median', 'std']).reset_index()
+    result_df = result_df.rename(columns={'std': 'dispersion'})
+    result_df = result_df.fillna(0)
 
-    for item in data:
-        data_by_cathegories[item['cathegory']].append(item['value'])
-
-    for cathegory in data_by_cathegories.keys():
-        values_list = data_by_cathegories[cathegory]
-        median = get_median(values_list)
-
-        if (median != None):
-            dispersion = get_dispersion(values_list)
-            result_data['cathegory'].append(cathegory)
-            result_data['median'].append(median)
-            result_data['dispersion'].append(dispersion)
-
-    return result_data
-
-def get_median(numbers: list) -> None | float:
-    quantity = len(numbers)
-    numbers.sort()
-
-    if quantity == 0: return None
-    if quantity == 1: return numbers[0]
-
-    if (quantity % 2) == 0:
-        return (numbers[(quantity//2)-1] + numbers[quantity//2]) / 2
-    else:
-        return numbers[(quantity//2)]
-
-def get_mean(numbers: list) -> float:
-    return sum(numbers) / len(numbers)
-
-def get_dispersion(numbers: list):
-    mean = get_mean(numbers)
-    dispersions_squares_sum = 0
-    quantity = len(numbers)
-
-    for number in numbers:
-        dispersions_squares_sum += (number - mean) ** 2
-
-    return dispersions_squares_sum / quantity
+    return result_df.to_dict(orient='records')
 
 def merge_processed_files(filenames: list[str]):
     merged_data = {
@@ -93,17 +48,17 @@ def merge_processed_files(filenames: list[str]):
     try:
         df.to_csv("data_processed_merged.csv", index=False)
     except Exception as e:
-        print(f"an error occurred: {e}")
+        print(f"Ошибка: {e}")
 
 if __name__ == '__main__':
-    #1. generation
+    #1. генерация
     filenames_to_process = []
 
     for i in range(5):
         generate_csv(f"data_{i+1}.csv")
         filenames_to_process.append(f"data_{i+1}")
 
-    #2. parallel processing
+    #2. параллельная обработка
     with Pool(max_workers=5) as executor:
         results = list(executor.map(process_csv, filenames_to_process))
 
@@ -111,13 +66,13 @@ if __name__ == '__main__':
         df = pd.DataFrame(results[i])
         filenames_to_process[i] = f"{filenames_to_process[i]}_processed"
 
-        #2.1 saving intermediate results
+        #2.1 промежуточный результат
         try:
             df.to_csv(f"{filenames_to_process[i]}.csv", index=False)
         except Exception as e:
-            print(f"an error occurred: {e}")
+            print(f"Ошибка: {e}")
 
-    #3. final processing
+    #3. финальная обработка
     merge_processed_files(filenames_to_process)
     result = process_csv("data_processed_merged")
     df = pd.DataFrame(result)
@@ -125,6 +80,6 @@ if __name__ == '__main__':
     try:
         df.to_csv("result.csv", index=False)
     except Exception as e:
-        print(f"an error occurred: {e}")
+        print(f"Ошибка: {e}")
 
-    print("Done! Answer in result.csv. If u want to see all stages of the process check out other files.")
+    print("Готово! Результат в result.csv. Чтобы увидеть все стадии процесса обработки, проверьте другие файлы")
