@@ -92,10 +92,10 @@ def json_schema_validate(data):
 
 if __name__ == '__main__':
     try:
-        conn = db_connect("postgresql://admin:12345@127.0.0.1:5432/db")
+        conn = db_connect("postgresql://dizi73:z;lP9;4I2Tmn@195.209.210.116:5432/dizi")
         consumer = KafkaConsumer(
             'user-data',
-            bootstrap_servers='127.0.0.1:9092',
+            bootstrap_servers='195.209.210.116:9092',
             value_deserializer=lambda m: m.decode('utf-8')
         )
 
@@ -107,6 +107,12 @@ if __name__ == '__main__':
 
             if (valid_msg is None) or (not json_schema_validate(valid_msg)):
                 continue
+
+            print(f"\n{'=' * 50}")
+            print(f"[{now}] ПОЛУЧЕНЫ ДАННЫЕ ДЛЯ ТАБЛИЦЫ: {valid_msg.get('table_name')}")
+            print(f"{'=' * 50}")
+            print(json.dumps(valid_msg, indent=4, ensure_ascii=False))
+            print(f"{'-' * 50}")
 
             table_name = valid_msg.get("table_name")
             fields = valid_msg.get("fields")

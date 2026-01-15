@@ -77,7 +77,7 @@ def send_message(producer, topic, data):
 
 if __name__ == '__main__':
     KAFKA_TOPIC = 'user-data'
-    KAFKA_SERVERS = ['127.0.0.1:9092']
+    KAFKA_SERVERS = ['195.209.210.116:9092']
 
     producer = kafka_connect(KAFKA_SERVERS)
 
